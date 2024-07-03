@@ -5,6 +5,7 @@ import { useAppSelector } from "@/redux/hook";
 import Link from "next/link";
 import { useState } from "react";
 import NavbarPopup from "./NavbarPopup";
+import AppButton from "../ui/AppButton";
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -12,7 +13,11 @@ const Navbar = () => {
     const token = useAppSelector(useCurrentToken);
     const user = useAppSelector(selectCurrentUser);
 
-    console.log(user, token);
+    const handleBlur = () => {
+        setTimeout(() => {
+            setUserNavPanel(false);
+        }, 200);
+    }
 
     return (
         <nav className="navbar">
@@ -44,33 +49,35 @@ const Navbar = () => {
                 {
                     token ?
                         <>
-                            <Link href="/dashboard/notification">
-                                <button className="w-12 h-12 rounded-full bg-grey relative ☐ hover:bg-black/10">
-                                    <i className="fi fi-rr-bell text-2x1 block mt-1"></i>
-                                </button>
+                            <Link href="/dashboard/notification" className="flex items-center justify-center size-12 rounded-full bg-grey hover:bg-black/10">
+                                <i className="fi fi-rr-bell text-2x1 block mt-1"></i>
                             </Link>
 
-                            <div className="relative" onClick={() => setUserNavPanel(currentVal => !currentVal)}>
+                            <div className="relative" onBlur={handleBlur} onClick={() => setUserNavPanel(currentVal => !currentVal)}>
                                 <button className="w-12 h-12 mt-1">
-                                    <img src={user?.profileImg} className="w-full h-full object-cover rounded-full" />
+                                    <img src={user?.profileImg} className="w-full h-full border border-grey  object-cover rounded-full" />
                                 </button>
                                 {userNavPanel && <NavbarPopup />}
                             </div>
                         </>
                         :
                         <>
-                            <Link className="btn-dark py-2" href="/auth/sign-in">
-                                Sign In
-                            </Link>
+                            <AppButton
+                                label="Sign In"
+                                className="py-2"
+                                href="/auth/sign-in"
+                            />
 
-                            <Link className="btn-light py-2 hidden md:block" href="/auth/sign-up">
-                                Sign Up
-                            </Link>
+                            <AppButton
+                                label="Sign Up"
+                                className="py-2 hidden md:block"
+                                href="/auth/sign-up"
+                                variant="light"
+                            />
                         </>
                 }
 
             </div>
-
 
         </nav>
     );

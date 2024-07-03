@@ -23,7 +23,7 @@ const Providers = ({ children }: TProviders) => {
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      theme="dark"
+      theme="light"
       stacked
     // transition:Bounce
     />

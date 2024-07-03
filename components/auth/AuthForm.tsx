@@ -1,12 +1,69 @@
+'use client'
+
 import Link from "next/link";
 import AppInput from "../ui/AppInput";
 import AnimationWrapper from "../ui/AnimationWrapper";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useLoginMutation, useRegisterMutation } from "@/redux/features/auth/authApi";
+import { verifyToken } from "@/utils/verifyToken";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hook";
+import { setUser } from "@/redux/features/auth/authSlice";
+
+interface FormData {
+    fullName: string;
+    email: string;
+    password: string;
+}
 
 const AuthForm = ({ type }: { type: string }) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormData>();
+
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+    const [registerUser] = useRegisterMutation();
+    const [loginUser] = useLoginMutation();
+
+    const onSubmit: SubmitHandler<FormData> = (data) => {
+
+        if (type === "sign-up") {
+            registerUser(data).unwrap()
+                .then((res: any) => {
+                    const user = verifyToken(res?.data?.token);
+                    toast.success(res?.message || "Successfully registered.");
+                    console.log(user);
+                    dispatch(setUser({ user, token: res?.data?.token }))
+                    router.push(`/`);
+                })
+                .catch((res: any) => {
+                    toast.error(res?.data?.message || "something went wrong");
+                });
+        } else if (type === "sign-in") {
+            loginUser(data).unwrap()
+                .then((res: any) => {
+                    const user = verifyToken(res?.data?.token);
+                    toast.success(res?.message || "Successfully log in");
+                    console.log(user);
+                    dispatch(setUser({ user, token: res?.data?.token }))
+                    router.push(`/`);
+                })
+                .catch((res: any) => {
+                    toast.error(res?.data?.message || "something went wrong");
+                });
+        }
+    };
+
     return (
         <AnimationWrapper keyValue={type}>
             <section className="h-cover flex items-center justify-center">
-                <form className="w-[80%] max-w-[400px]">
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="w-[80%] max-w-[400px]">
                     <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
                         {type === "sign-in" ? "Welcome back" : "Join us today"}
                     </h1>
@@ -14,10 +71,13 @@ const AuthForm = ({ type }: { type: string }) => {
                     {
                         type !== "sign-in" ?
                             <AppInput
-                                name="fullname"
+                                name="fullName"
                                 type="text"
                                 placeholder="Full Name"
                                 icon="fi-rr-user"
+                                register={register}
+                                required
+                                error={errors.fullName}
                             />
                             : ""
                     }
@@ -27,6 +87,9 @@ const AuthForm = ({ type }: { type: string }) => {
                         type="email"
                         placeholder="Enter your Email"
                         icon="fi-rr-envelope"
+                        register={register}
+                        required
+                        error={errors.email}
                     />
 
                     <AppInput
@@ -34,6 +97,9 @@ const AuthForm = ({ type }: { type: string }) => {
                         type="password"
                         placeholder="Password"
                         icon="fi-rr-key"
+                        register={register}
+                        required
+                        error={errors.password}
                     />
 
                     <button className="btn-dark center mt-14" type="submit">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react";
+import { UseFormRegister } from "react-hook-form";
 
 type TAppInput = {
     name: string;
@@ -8,34 +9,40 @@ type TAppInput = {
     id?: string;
     value?: string;
     placeholder: string;
-    icon: string
+    icon: string;
+    register: UseFormRegister<any>;
+    required?: true | false;
+    error?: any;
 }
 
-const AppInput = ({ name, type, id, value, placeholder, icon }: TAppInput) => {
+const AppInput = ({ name, type, id, value, placeholder, icon, register, required, error }: TAppInput) => {
 
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     return (
-        <div className="relative w-[100%] mb-4">
-            <input
-                name={name}
-                type={type === "password" ? (passwordVisible ? "text" : "password") : type}
-                placeholder={placeholder}
-                defaultValue={value}
-                id={id}
-                className="input-box"
-            />
-            <i className={`fi ${icon} input-icon`}></i>
+        <>
+            <div className={`relative w-[100%] ${error ? "mb-1" : "mb-4"}`}>
+                <input
+                    {...register(name, { ...(required && { required: true }), ...(type === "number" && { valueAsNumber: true }) })}
+                    type={type === "password" ? (passwordVisible ? "text" : "password") : type}
+                    placeholder={placeholder}
+                    defaultValue={value}
+                    id={id}
+                    className={`input-box ${error && "border-red"}`}
+                />
+                <i className={`fi ${icon} input-icon`}></i>
 
-            {
-                type === "password" ? (
-                    <i
-                        className={`fi  ${!passwordVisible ? "fi-rr-eye-crossed" : "fi-rr-eye"} input-icon left-[auto] right-4 cursor-pointer`}
-                        onClick={() => setPasswordVisible((currentVal) => !currentVal)}
-                    ></i>
-                ) : ""
-            }
-        </div>
+                {
+                    type === "password" ? (
+                        <i
+                            className={`fi  ${!passwordVisible ? "fi-rr-eye-crossed" : "fi-rr-eye"} input-icon left-[auto] right-4 cursor-pointer`}
+                            onClick={() => setPasswordVisible((currentVal) => !currentVal)}
+                        ></i>
+                    ) : ""
+                }
+            </div>
+            {error && <p className="text-sm text-red mb-4"><span className="capitalize text-sm">{name}</span> is required.</p>}
+        </>
     );
 };
 

@@ -1,10 +1,18 @@
 "use client"
 
+import { selectCurrentUser, useCurrentToken } from "@/redux/features/auth/authSlice";
+import { useAppSelector } from "@/redux/hook";
 import Link from "next/link";
 import { useState } from "react";
+import NavbarPopup from "./NavbarPopup";
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
+    const [userNavPanel, setUserNavPanel] = useState(false);
+    const token = useAppSelector(useCurrentToken);
+    const user = useAppSelector(selectCurrentUser);
+
+    console.log(user, token);
 
     return (
         <nav className="navbar">
@@ -18,7 +26,6 @@ const Navbar = () => {
                     placeholder="Search"
                     className="w-full md:w-auto bg-grey p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey md:pl-12"
                 />
-
                 <i className="fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey"></i>
             </div>
 
@@ -29,20 +36,38 @@ const Navbar = () => {
                     <i className="fi fi-rr-search text-xl"></i>
                 </button>
 
-
                 <Link href="/editor" className="hidden md:flex gap-2 link">
                     <i className="fi fi-rr-file-edit"></i>
                     <p>Write</p>
                 </Link>
 
-                <Link className="btn-dark py-2" href="/auth/sign-in">
-                    Sign In
-                </Link>
+                {
+                    token ?
+                        <>
+                            <Link href="/dashboard/notification">
+                                <button className="w-12 h-12 rounded-full bg-grey relative ☐ hover:bg-black/10">
+                                    <i className="fi fi-rr-bell text-2x1 block mt-1"></i>
+                                </button>
+                            </Link>
 
-                <Link className="btn-light py-2 hidden md:block" href="/auth/sign-up">
-                    Sign Up
-                </Link>
+                            <div className="relative" onClick={() => setUserNavPanel(currentVal => !currentVal)}>
+                                <button className="w-12 h-12 mt-1">
+                                    <img src={user?.profileImg} className="w-full h-full object-cover rounded-full" />
+                                </button>
+                                {userNavPanel && <NavbarPopup />}
+                            </div>
+                        </>
+                        :
+                        <>
+                            <Link className="btn-dark py-2" href="/auth/sign-in">
+                                Sign In
+                            </Link>
 
+                            <Link className="btn-light py-2 hidden md:block" href="/auth/sign-up">
+                                Sign Up
+                            </Link>
+                        </>
+                }
 
             </div>
 

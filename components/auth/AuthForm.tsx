@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useGoogleAuthRegisterMutation, useLoginMutation, useRegisterMutation } from "@/redux/features/auth/authApi";
 import { verifyToken } from "@/utils/verifyToken";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { authWithGoogle } from "../shared/firebase";
@@ -25,6 +25,8 @@ const AuthForm = ({ type }: { type: string }) => {
         formState: { errors },
     } = useForm<FormData>();
 
+    const searchParams = useSearchParams();
+    const from = searchParams.get('from');
     const router = useRouter();
     const dispatch = useAppDispatch();
     const [registerUser] = useRegisterMutation();
@@ -40,7 +42,12 @@ const AuthForm = ({ type }: { type: string }) => {
                     toast.success(res?.message || "Successfully registered.");
                     console.log(user);
                     dispatch(setUser({ user, accessToken: res?.data?.accessToken }))
-                    router.push(`/`);
+
+                    if (from) {
+                        router.push(from);
+                    } else {
+                        router.push("/");
+                    }
                 })
                 .catch((res: any) => {
                     toast.error(res?.data?.message || "something went wrong");
@@ -52,7 +59,11 @@ const AuthForm = ({ type }: { type: string }) => {
                     toast.success(res?.message || "Successfully log in");
                     console.log(user);
                     dispatch(setUser({ user, accessToken: res?.data?.accessToken }))
-                    router.push(`/`);
+                    if (from) {
+                        router.push(from);
+                    } else {
+                        router.push("/");
+                    }
                 })
                 .catch((res: any) => {
                     toast.error(res?.data?.message || "something went wrong");
@@ -66,7 +77,11 @@ const AuthForm = ({ type }: { type: string }) => {
                 .then((res: any) => {
                     toast.success(res?.message || "Successfully registered.");
                     dispatch(setUser({ user: res?.data?.user, accessToken: res?.data?.accessToken }))
-                    router.push(`/`);
+                    if (from) {
+                        router.push(from);
+                    } else {
+                        router.push("/");
+                    }
                 })
                 .catch((res: any) => {
                     toast.error(res?.data?.message || "something went wrong");

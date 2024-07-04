@@ -10,7 +10,7 @@ import AppButton from "../ui/AppButton";
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [userNavPanel, setUserNavPanel] = useState(false);
-    const token = useAppSelector(useCurrentToken);
+    const accessToken = useAppSelector(useCurrentToken);
     const user = useAppSelector(selectCurrentUser);
 
     const handleBlur = () => {
@@ -47,7 +47,7 @@ const Navbar = () => {
                 </Link>
 
                 {
-                    token ?
+                    accessToken ?
                         <>
                             <Link href="/dashboard/notification" className="flex items-center justify-center size-12 rounded-full bg-grey hover:bg-black/10">
                                 <i className="fi fi-rr-bell text-2x1 block mt-1"></i>

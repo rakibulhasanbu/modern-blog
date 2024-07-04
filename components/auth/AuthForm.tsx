@@ -4,12 +4,13 @@ import Link from "next/link";
 import AppInput from "../ui/AppInput";
 import AnimationWrapper from "../ui/AnimationWrapper";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useLoginMutation, useRegisterMutation } from "@/redux/features/auth/authApi";
+import { useGoogleAuthRegisterMutation, useLoginMutation, useRegisterMutation } from "@/redux/features/auth/authApi";
 import { verifyToken } from "@/utils/verifyToken";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { setUser } from "@/redux/features/auth/authSlice";
+import { authWithGoogle } from "../shared/firebase";
 
 interface FormData {
     fullName: string;
@@ -27,29 +28,30 @@ const AuthForm = ({ type }: { type: string }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const [registerUser] = useRegisterMutation();
+    const [registerGoogleAuth] = useGoogleAuthRegisterMutation();
     const [loginUser] = useLoginMutation();
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
 
         if (type === "sign-up") {
-            registerUser(data).unwrap()
+            await registerUser(data).unwrap()
                 .then((res: any) => {
-                    const user = verifyToken(res?.data?.token);
+                    const user = verifyToken(res?.data?.accessToken);
                     toast.success(res?.message || "Successfully registered.");
                     console.log(user);
-                    dispatch(setUser({ user, token: res?.data?.token }))
+                    dispatch(setUser({ user, accessToken: res?.data?.accessToken }))
                     router.push(`/`);
                 })
                 .catch((res: any) => {
                     toast.error(res?.data?.message || "something went wrong");
                 });
         } else if (type === "sign-in") {
-            loginUser(data).unwrap()
+            await loginUser(data).unwrap()
                 .then((res: any) => {
-                    const user = verifyToken(res?.data?.token);
+                    const user = verifyToken(res?.data?.accessToken);
                     toast.success(res?.message || "Successfully log in");
                     console.log(user);
-                    dispatch(setUser({ user, token: res?.data?.token }))
+                    dispatch(setUser({ user, accessToken: res?.data?.accessToken }))
                     router.push(`/`);
                 })
                 .catch((res: any) => {
@@ -57,6 +59,23 @@ const AuthForm = ({ type }: { type: string }) => {
                 });
         }
     };
+
+    const handleGoogleLogin = () => {
+        authWithGoogle().then((user: any) => {
+            registerGoogleAuth({ accessToken: user?.accessToken }).unwrap()
+                .then((res: any) => {
+                    toast.success(res?.message || "Successfully registered.");
+                    dispatch(setUser({ user: res?.data?.user, accessToken: res?.data?.accessToken }))
+                    router.push(`/`);
+                })
+                .catch((res: any) => {
+                    toast.error(res?.data?.message || "something went wrong");
+                });
+        }).catch(err => {
+            toast.error("Trouble login through Google Account.");
+            return console.log(err);
+        })
+    }
 
     return (
         <AnimationWrapper keyValue={type}>
@@ -112,7 +131,7 @@ const AuthForm = ({ type }: { type: string }) => {
                         <hr className="w-1/2 border-black" />
                     </div>
 
-                    <button className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
+                    <button type="button" onClick={handleGoogleLogin} className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
                         <img src={"/google.png"} className="w-5" />
                         continue with google
                     </button>

@@ -9,6 +9,13 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
+    googleAuthRegister: builder.mutation({
+      query: (userInfo) => ({
+        url: "/auth/google-auth",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     login: builder.mutation({
       query: (userInfo) => ({
         url: "/auth/login",
@@ -28,6 +35,7 @@ const authApi = baseApi.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useGoogleAuthRegisterMutation,
   useRegisterMutation,
   useForgotPasswordMutation,
 } = authApi;

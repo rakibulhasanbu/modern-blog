@@ -7,10 +7,10 @@ const baseQuery = fetchBaseQuery({
   baseUrl: config.baseUrl,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token;
+    const accessToken = (getState() as RootState).auth.accessToken;
 
-    if (token) {
-      headers.set("authorization", token);
+    if (accessToken) {
+      headers.set("authorization", accessToken);
     }
     return headers;
   },

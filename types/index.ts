@@ -87,11 +87,13 @@ export interface Activity {
 export interface TBlog {
   slug: string;
   title: string;
-  banner?: string;
-  des?: string;
+  banner: string;
+  description: string;
   content?: unknown[];
-  tags?: string[];
-  author: string;
+  tags: string[];
+  author: {
+    personalInfo: PersonalInfo;
+  };
   activity: Activity;
   comments?: string;
   draft: boolean;

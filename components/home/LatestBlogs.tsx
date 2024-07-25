@@ -9,6 +9,7 @@ import { useAppSelector } from "@/redux/hook";
 import EmptyDataMessage from "../shared/EmptyDataMessage";
 import { author, stateData } from "@/data";
 import LoadMoreBtn from "./LoadMoreBtn";
+import { TBlog } from "@/types";
 
 const LatestBlogs = ({ id }: { id?: string }) => {
   const [page, setPage] = useState(1);
@@ -50,7 +51,7 @@ const LatestBlogs = ({ id }: { id?: string }) => {
             key={blog?.title}
             transition={{ duration: 1, delay: i * 0.1 }}
           >
-            <BlogCard content={blog} author={author} />
+            <BlogCard blog={blog} />
           </AnimationWrapper>
         ))
       ) : (

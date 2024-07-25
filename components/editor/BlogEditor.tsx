@@ -48,12 +48,12 @@ const BlogEditor = () => {
   const initEditor = () => {
     const editor = new EditorJS({
       holder: "textEditor",
-      data: blogContent as any,
+      data: { blocks: blogContent as any },
       tools: tools as any,
       placeholder: "Let's Write a awesome Story",
       onChange: async () => {
         const data = await editor.save();
-        dispatch(setBlogContent(data));
+        dispatch(setBlogContent(data.blocks));
       },
     });
   };
@@ -73,7 +73,7 @@ const BlogEditor = () => {
       return toast.error("Write blog title before saving it as a draft");
     }
 
-    if ((blogContent as any)?.blocks?.length) {
+    if (blogContent?.length) {
       dispatch(setEditorState("publish"));
     } else {
       return toast.error("Write something in your blog to publish it.");

@@ -9,7 +9,7 @@ const initialState = {
     tags: [],
     description: "",
   },
-  blogContent: {},
+  blogContent: [],
   textEditor: {
     isReady: false,
   },

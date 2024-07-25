@@ -28,6 +28,14 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.blog],
     }),
 
+    getBlogBySlug: builder.query({
+      query: (slug) => ({
+        url: `/blog/${slug}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.blog],
+    }),
+
     getMyBlogs: builder.query({
       query: (filterOptions) => ({
         url: `/my-blogs${filterOptions ? `?${filterOptions}` : ""}`,
@@ -57,6 +65,7 @@ const blogApi = baseApi.injectEndpoints({
 
 export const {
   useCreateBlogMutation,
+  useGetBlogBySlugQuery,
   useGetBlogsQuery,
   useGetTrendingBlogsQuery,
   useUpdateBookingBlogMutation,

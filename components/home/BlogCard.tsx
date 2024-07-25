@@ -1,71 +1,51 @@
+import { TBlog } from "@/types";
 import { getDay } from "@/utils/formateDate";
 import Image from "next/image";
 import Link from "next/link";
 
 type TBlogCard = {
-  content: {
-    createdAt: string;
-    tags: string;
-    title: string;
-    des: string;
-    banner: string;
-    activity: { totalLikes: number };
-    slug: string;
-  };
-  author: {
-    fullName: string;
-    profileImg: string;
-    username: string;
-  };
+  blog: TBlog;
 };
 
-const BlogCard = ({ content, author }: TBlogCard) => {
-  const {
-    createdAt,
-    tags,
-    title,
-    des,
-    banner,
-    activity: { totalLikes },
-    slug,
-  } = content;
-  const { fullName, profileImg, username } = author;
+const BlogCard = ({ blog }: TBlogCard) => {
   return (
     <Link
-      href={`/blog/${slug}`}
+      href={`/blog/${blog?.slug}`}
       className="flex gap-8 items-center border-b border-grey pb-5 mb-4"
     >
       <div className="w-full">
         <div className="flex gap-2 items-center mb-7">
           <Image
-            src={profileImg}
+            src={blog?.author?.personalInfo?.profileImg as string}
             alt="profile image"
             width={30}
             height={30}
             className="size-6 rounded-full"
           />
           <p className="line-clamp-1">
-            {fullName} @{username}
+            {blog?.author?.personalInfo?.fullName} @
+            {blog?.author?.personalInfo?.username}
           </p>
-          <p className="min-w-fit">{getDay(createdAt)}</p>
+          <p className="min-w-fit">{getDay(blog?.createdAt)}</p>
         </div>
 
-        <h1 className="blog-title">{title}</h1>
+        <h1 className="blog-title">{blog?.title}</h1>
         <p className="my-3 text-xl font-gelasio leading-7 hidden md:block line-clamp-2">
-          {des}
+          {blog?.description}
         </p>
 
         <div className="flex items-center gap-4 mt-7">
-          <span className="btn-light py-1 px-4">{tags[0]}</span>
+          <span className="btn-light py-1 px-4">{(blog?.tags as any)[0]}</span>
           <span className="ml-3 flex items-center gap-2 text-dark-grey">
-            <i className="fi fi-rr-heart text-xl"></i> {totalLikes}
+            <i className="fi fi-rr-heart text-xl"></i>{" "}
+            {blog?.activity?.total_likes}
           </span>
         </div>
       </div>
 
       <div className="h-28 aspect-square bg-grey">
         <Image
-          src={banner}
+          src={blog?.banner as string}
           className="w-full h-full object-cover aspect-square "
           alt="banner Image"
           width={130}

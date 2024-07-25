@@ -4,10 +4,9 @@ import ManageDraftBlogPost from "@/components/dashboard/ManageDraftBlogPost";
 import ManagePublishedBlogs from "@/components/dashboard/ManagePublishedBlogs";
 import InPageNavigation from "@/components/shared/InPageNavigation";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
-import { latestBlog } from "@/data";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetMyBlogsQuery } from "@/redux/features/blog/blogApi";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 

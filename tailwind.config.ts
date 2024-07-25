@@ -37,6 +37,15 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      keyframes: {
+        wave_23: {
+          "0%, 100%": { top: "0", opacity: "1" },
+          "50%": { top: "30px", opacity: ".2" },
+        },
+      },
+      animation: {
+        wave_23: "wave_23 2s ease infinite",
+      },
     },
   },
   plugins: [

@@ -7,6 +7,7 @@ import UserCard from "./UserCard";
 import { useMemo } from "react";
 import { useAppSelector } from "@/redux/hook";
 import useDebounce from "@/hooks/useDebounce";
+import AppLoading from "../ui/AppLoading";
 
 const SearchUsers = () => {
   const { blogSearch } = useAppSelector((state) => state.blog);
@@ -30,7 +31,7 @@ const SearchUsers = () => {
   const { data, isLoading } = useGetUsersQuery(queryString);
 
   if (isLoading) {
-    return "Loading ";
+    return <AppLoading />;
   }
 
   return (

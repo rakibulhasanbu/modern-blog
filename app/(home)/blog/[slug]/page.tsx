@@ -4,6 +4,7 @@ import BlogContent from "@/components/blog/BlogContent";
 import BlogInteraction from "@/components/blog/BlogInteraction";
 import SimilarBlogs from "@/components/blog/SimilarBlogs";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
+import AppLoading from "@/components/ui/AppLoading";
 import { useGetBlogBySlugQuery } from "@/redux/features/blog/blogApi";
 import { TBlog } from "@/types";
 import { getDay } from "@/utils/formateDate";
@@ -12,12 +13,13 @@ import { useParams } from "next/navigation";
 
 const BlogDetails = () => {
   const { slug } = useParams();
-  const { data, isLoading } = useGetBlogBySlugQuery(slug);
+  const { data, isLoading } = useGetBlogBySlugQuery({ slug });
   const blog = data?.data as TBlog;
 
   if (isLoading) {
-    return "Loading...";
+    return <AppLoading />;
   }
+
   return (
     <AnimationWrapper>
       <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">

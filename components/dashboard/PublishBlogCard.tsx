@@ -53,7 +53,7 @@ const PublishBlogCard = ({ blog }: TPublishedBlogCard) => {
           <div className="flex gap-6 mt-3">
             <Link
               className="pr-4 py-2 underline"
-              href={`/editor/${blog?.slug}`}
+              href={`/editor?slug=${blog?.slug}`}
             >
               Edit
             </Link>

@@ -124,6 +124,21 @@
   }
 }
 
+@layer utilities {
+  .delay-0 {
+    animation-delay: 0s;
+  }
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  .delay-600 {
+    animation-delay: 0.6s;
+  }
+}
+
 .ce-block__content,
 .ce-toolbar__content {
   max-width: 900px;

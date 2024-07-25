@@ -10,6 +10,7 @@ import EmptyDataMessage from "../shared/EmptyDataMessage";
 import { author, stateData } from "@/data";
 import LoadMoreBtn from "./LoadMoreBtn";
 import { TBlog } from "@/types";
+import AppLoading from "../ui/AppLoading";
 
 const LatestBlogs = ({ id }: { id?: string }) => {
   const [page, setPage] = useState(1);
@@ -40,7 +41,7 @@ const LatestBlogs = ({ id }: { id?: string }) => {
   const { data, isLoading } = useGetBlogsQuery(queryString);
 
   if (isLoading) {
-    return "Loading ";
+    return <AppLoading />;
   }
 
   return (

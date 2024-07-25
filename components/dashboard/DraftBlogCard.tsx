@@ -29,10 +29,13 @@ const DraftBlogCard = ({ blog, index }: TDraftBlogCard) => {
       <div className="">
         <h1 className="blog-title mb-3">{blog?.title}</h1>
         <p className="line-clamp-2 font-gelasio">
-          {blog?.des?.length ? blog.des : "No Description"}
+          {blog?.description?.length ? blog.description : "No Description"}
         </p>
         <div className="flex gap-6 mt-3">
-          <Link className="pr-4 py-2 underline" href={`/editor/${blog.slug}`}>
+          <Link
+            className="pr-4 py-2 underline"
+            href={`/editor?slug=${blog?.slug}`}
+          >
             Edit
           </Link>
           <button

@@ -4,6 +4,7 @@ import ManageDraftBlogPost from "@/components/dashboard/ManageDraftBlogPost";
 import ManagePublishedBlogs from "@/components/dashboard/ManagePublishedBlogs";
 import InPageNavigation from "@/components/shared/InPageNavigation";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
+import AppLoading from "@/components/ui/AppLoading";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetMyBlogsQuery } from "@/redux/features/blog/blogApi";
 import { useSearchParams } from "next/navigation";
@@ -42,7 +43,7 @@ const GetMyBlogs = () => {
   const tab = useSearchParams().get("tab");
 
   if (isLoading) {
-    return "Loading...";
+    return <AppLoading />;
   }
 
   return (

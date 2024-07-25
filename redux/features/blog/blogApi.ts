@@ -29,10 +29,16 @@ const blogApi = baseApi.injectEndpoints({
     }),
 
     getBlogBySlug: builder.query({
-      query: (slug) => ({
-        url: `/blog/${slug}`,
-        method: "GET",
-      }),
+      query: ({ slug, mode }) => {
+        let url = `/blog/${slug}`;
+        if (mode) {
+          url += `?mode=${mode}`;
+        }
+        return {
+          url,
+          method: "GET",
+        };
+      },
       providesTags: [tagTypes.blog],
     }),
 
@@ -44,11 +50,11 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.blog],
     }),
 
-    updateBookingBlog: builder.mutation({
+    updateBlog: builder.mutation({
       query: (updatedData) => ({
-        url: `/booking-requests/${updatedData.id}`,
+        url: `/blog/${updatedData.slug}`,
         method: "PUT",
-        body: updatedData.BookingBlogData,
+        body: updatedData.data,
       }),
       invalidatesTags: [tagTypes.blog],
     }),
@@ -68,7 +74,7 @@ export const {
   useGetBlogBySlugQuery,
   useGetBlogsQuery,
   useGetTrendingBlogsQuery,
-  useUpdateBookingBlogMutation,
+  useUpdateBlogMutation,
   useDeleteBlogMutation,
   useGetMyBlogsQuery,
 } = blogApi;

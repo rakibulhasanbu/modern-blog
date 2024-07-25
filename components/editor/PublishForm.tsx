@@ -1,14 +1,21 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import AnimationWrapper from "../ui/AnimationWrapper";
-import { setBlog, setEditorState } from "@/redux/features/blog/blogSlice";
+import {
+  setBlog,
+  setBlogContent,
+  setEditorState,
+} from "@/redux/features/blog/blogSlice";
 import AppInput from "../ui/AppInput";
 import Tag from "./Tag";
 import { toast } from "react-toastify";
-import { useCreateBlogMutation } from "@/redux/features/blog/blogApi";
+import {
+  useCreateBlogMutation,
+  useUpdateBlogMutation,
+} from "@/redux/features/blog/blogApi";
 import { useRouter } from "next/navigation";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
-const PublishForm = () => {
+const PublishForm = ({ slug }: { slug: string | null }) => {
   const characterLimit = 200;
   const tagLimit = 10;
   const router = useRouter();
@@ -16,6 +23,8 @@ const PublishForm = () => {
   const user = useAppSelector(selectCurrentUser);
   const { blog, blogContent } = useAppSelector((state) => state.blog);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
+  const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
+
   const handleTitleChange = (e: any) => {
     dispatch(setBlog({ ...blog, title: e.target.value }));
   };
@@ -69,18 +78,57 @@ const PublishForm = () => {
       draft: false,
       author: user?.id,
     };
-    console.log(blogObj);
-    await createBlog(blogObj)
-      .unwrap()
-      .then((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.success(res?.message || "Blog published Successfully.");
-        router.push(`/dashboard/blogs`);
-      })
-      .catch((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.error(res?.data?.message || "something went wrong");
-      });
+
+    if (slug) {
+      const updateData = { slug, data: blogObj };
+      await updateBlog(updateData)
+        .unwrap()
+        .then((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.success(
+            res?.message || "Blog updated and publish Successfully."
+          );
+          router.push(`/dashboard/blogs`);
+          dispatch(setBlogContent([]));
+          dispatch(
+            setBlog({
+              blog: {
+                title: "",
+                banner: "",
+                tags: [],
+                description: "",
+              },
+            })
+          );
+        })
+        .catch((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.error(res?.data?.message || "something went wrong");
+        });
+    } else {
+      await createBlog(blogObj)
+        .unwrap()
+        .then((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.success(res?.message || "Blog published Successfully.");
+          router.push(`/dashboard/blogs`);
+          dispatch(setBlogContent([]));
+          dispatch(
+            setBlog({
+              blog: {
+                title: "",
+                banner: "",
+                tags: [],
+                description: "",
+              },
+            })
+          );
+        })
+        .catch((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.error(res?.data?.message || "something went wrong");
+        });
+    }
   };
 
   return (
@@ -131,7 +179,7 @@ const PublishForm = () => {
             onKeyDown={handleKeyDown}
           ></textarea>
           <p className="text-dark-grey mt-1 text-sm text-right">
-            {characterLimit - blog.description.length} characters left
+            {characterLimit - blog?.description?.length} characters left
           </p>
 
           <p>Topics - ( Helps is searching and ranking your blog post )</p>
@@ -142,12 +190,12 @@ const PublishForm = () => {
               onKeyDown={handleKeyDownForTag}
               className="input-box bg-white sticky top-0 left-0 pl-4 mb-3 focus:bg-white"
             />
-            {blog?.tags.map((tag, i) => (
+            {blog?.tags?.map((tag, i) => (
               <Tag key={i} i={i} tag={tag} />
             ))}
           </div>
           <p className="mt-1 mb-4 text-dark-grey text-right">
-            {tagLimit - blog.tags.length} Tags left
+            {tagLimit - blog?.tags?.length} Tags left
           </p>
           <button
             onClick={handleFinallyPublishBlog}

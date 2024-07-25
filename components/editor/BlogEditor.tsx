@@ -14,9 +14,18 @@ import EditorJS from "@editorjs/editorjs";
 import { tools } from "@/utils/tools";
 import { uploadImage } from "@/utils/uploadImage";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
-import { useCreateBlogMutation } from "@/redux/features/blog/blogApi";
+import {
+  useCreateBlogMutation,
+  useUpdateBlogMutation,
+} from "@/redux/features/blog/blogApi";
 
-const BlogEditor = () => {
+const BlogEditor = ({
+  content,
+  slug,
+}: {
+  content: any;
+  slug: string | null;
+}) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const editorRef = useRef<any>(null);
@@ -24,6 +33,7 @@ const BlogEditor = () => {
   const user = useAppSelector(selectCurrentUser);
   const [loading, setLoading] = useState(false);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
+  const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
   const handleBannerUpload = async (e: any) => {
     const { url } = await uploadImage({ setLoading, e });
 
@@ -48,7 +58,9 @@ const BlogEditor = () => {
   const initEditor = () => {
     const editor = new EditorJS({
       holder: "textEditor",
-      data: { blocks: blogContent as any },
+      data: {
+        blocks: blogContent,
+      },
       tools: tools as any,
       placeholder: "Let's Write a awesome Story",
       onChange: async () => {
@@ -59,11 +71,19 @@ const BlogEditor = () => {
   };
 
   useEffect(() => {
-    if (!editorRef.current) {
-      initEditor();
-      editorRef.current = true;
+    if (blogContent.length > 0) {
+      if (!editorRef.current) {
+        initEditor();
+        editorRef.current = true;
+      }
     }
-  }, []);
+  }, [blogContent]);
+
+  useEffect(() => {
+    if (content) {
+      dispatch(setBlogContent(content));
+    }
+  }, [content, dispatch]);
 
   const handlePublishBlog = async () => {
     if (!blog.banner.length) {
@@ -97,17 +117,54 @@ const BlogEditor = () => {
       author: user?.id,
     };
 
-    await createBlog(blogObj)
-      .unwrap()
-      .then((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.success(res?.message || "Blogs are saved as a draft");
-        router.push("/dashboard/blogs?tab=draft");
-      })
-      .catch((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.error(res?.data?.message || "something went wrong");
-      });
+    if (slug) {
+      const updateData = { slug, data: blogObj };
+      await updateBlog(updateData)
+        .unwrap()
+        .then((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.success("Blogs are saved as a draft");
+          router.push("/dashboard/blogs?tab=draft");
+          dispatch(setBlogContent([]));
+          dispatch(
+            setBlog({
+              blog: {
+                title: "",
+                banner: "",
+                tags: [],
+                description: "",
+              },
+            })
+          );
+        })
+        .catch((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.error(res?.data?.message || "something went wrong");
+        });
+    } else {
+      await createBlog(blogObj)
+        .unwrap()
+        .then((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.success("Blogs are saved as a draft");
+          router.push("/dashboard/blogs?tab=draft");
+          dispatch(setBlogContent([]));
+          dispatch(
+            setBlog({
+              blog: {
+                title: "",
+                banner: "",
+                tags: [],
+                description: "",
+              },
+            })
+          );
+        })
+        .catch((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.error(res?.data?.message || "something went wrong");
+        });
+    }
   };
 
   return (

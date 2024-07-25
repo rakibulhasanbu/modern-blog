@@ -2,6 +2,7 @@
 
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
 import AppFormInput from "@/components/ui/AppFormInput";
+import AppLoading from "@/components/ui/AppLoading";
 import AppTextarea from "@/components/ui/AppTextarea";
 import { profileData } from "@/data";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
@@ -139,7 +140,7 @@ const EditProfile = () => {
   }, [isSuccess, profile, refetch, setValue]);
 
   if (isLoading) {
-    return "Loading..";
+    return <AppLoading />;
   }
 
   return (

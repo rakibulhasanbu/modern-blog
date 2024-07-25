@@ -5,12 +5,13 @@ import AnimationWrapper from "../ui/AnimationWrapper";
 import MinimalBlogPost from "./MinimalBlogPost";
 import EmptyDataMessage from "../shared/EmptyDataMessage";
 import { trendingBlogs } from "@/data";
+import AppLoading from "../ui/AppLoading";
 
 const TrendingBlogs = () => {
   const { data, isLoading } = useGetTrendingBlogsQuery("");
 
   if (isLoading) {
-    return "Loading ";
+    return <AppLoading />;
   }
 
   return (

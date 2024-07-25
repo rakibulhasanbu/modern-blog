@@ -3,6 +3,7 @@
 import LatestBlogs from "@/components/home/LatestBlogs";
 import InPageNavigation from "@/components/shared/InPageNavigation";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
+import AppLoading from "@/components/ui/AppLoading";
 import AboutUser from "@/components/user/AboutUser";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useGetUserProfileQuery } from "@/redux/features/user/userApi";
@@ -30,7 +31,7 @@ const UserProfilePage = () => {
   }, [data]);
 
   if (isLoading) {
-    return "Loading..";
+    return <AppLoading />;
   }
 
   return (

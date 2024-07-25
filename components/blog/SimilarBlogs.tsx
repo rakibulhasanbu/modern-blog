@@ -3,6 +3,7 @@ import { TBlog } from "@/types";
 import { useMemo } from "react";
 import AnimationWrapper from "../ui/AnimationWrapper";
 import BlogCard from "../home/BlogCard";
+import AppLoading from "../ui/AppLoading";
 
 type TSimilarBlogs = {
   blog: TBlog;
@@ -29,7 +30,7 @@ const SimilarBlogs = ({ blog }: TSimilarBlogs) => {
   const { data, isLoading } = useGetBlogsQuery(queryString);
 
   if (isLoading) {
-    return "Loading ";
+    return <AppLoading />;
   }
   return (
     <>

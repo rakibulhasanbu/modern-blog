@@ -10,9 +10,6 @@ const initialState = {
     description: "",
   },
   blogContent: [],
-  textEditor: {
-    isReady: false,
-  },
   editorState: "editor",
 };
 
@@ -21,8 +18,7 @@ const blogSlice = createSlice({
   initialState,
   reducers: {
     setBlog: (state, action) => {
-      const { title, banner, content, tags, description, author } =
-        action.payload;
+      const { title, banner, tags, description } = action.payload;
       state.blog.title = title;
       state.blog.banner = banner;
       state.blog.tags = tags;
@@ -37,9 +33,6 @@ const blogSlice = createSlice({
     setCategory: (state, action) => {
       state.category = action.payload;
     },
-    setTextEditor: (state, action) => {
-      state.textEditor = action.payload;
-    },
     setEditorState: (state, action) => {
       state.editorState = action.payload;
     },
@@ -48,7 +41,6 @@ const blogSlice = createSlice({
 
 export const {
   setBlog,
-  setTextEditor,
   setBlogSearch,
   setCategory,
   setEditorState,

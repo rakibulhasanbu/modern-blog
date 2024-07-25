@@ -1,4 +1,4 @@
-type SocialLinks = {
+export type TSocialLinks = {
   youtube?: string;
   instagram?: string;
   facebook?: string;
@@ -24,11 +24,13 @@ type PersonalInfo = {
 };
 
 export type TUser = {
+  _id: string;
   personalInfo: PersonalInfo;
-  socialLinks: SocialLinks;
+  socialLinks: TSocialLinks;
   accountInfo: AccountInfo;
   googleAuth: boolean;
   blogs: string[];
+  joinedAt?: string;
 };
 
 export type TTokenUser = {
@@ -67,4 +69,36 @@ export const BookingStatus = {
   REJECTED: "REJECTED",
 };
 
+export const NotificationType = {
+  comment: "comment",
+  reply: "reply",
+  like: "like",
+};
+
 export type TUserRole = keyof typeof USER_ROLE;
+
+export interface Activity {
+  total_likes: number;
+  total_comments: number;
+  total_reads: number;
+  total_parent_comments: number;
+}
+
+export interface TBlog {
+  slug: string;
+  title: string;
+  banner?: string;
+  des?: string;
+  content?: unknown[];
+  tags?: string[];
+  author: string;
+  activity: Activity;
+  comments?: string;
+  draft: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface TNotification {
+  deletedDocCount: string;
+}

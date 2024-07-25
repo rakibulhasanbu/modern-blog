@@ -23,9 +23,9 @@ const authApi = baseApi.injectEndpoints({
         body: userInfo,
       }),
     }),
-    forgotPassword: builder.mutation({
+    changePassword: builder.mutation({
       query: (userInfo) => ({
-        url: "/change-password",
+        url: "/auth/change-password",
         method: "POST",
         body: userInfo,
       }),
@@ -37,5 +37,5 @@ export const {
   useLoginMutation,
   useGoogleAuthRegisterMutation,
   useRegisterMutation,
-  useForgotPasswordMutation,
+  useChangePasswordMutation,
 } = authApi;

@@ -3,37 +3,25 @@ import { tagTypes } from "../../api/tagTypesList";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query({
-      query: () => {
-        return {
-          url: `/profile`,
-        };
-      },
-      providesTags: [tagTypes.user],
-    }),
     getUsers: builder.query({
-      query: () => {
-        return {
-          url: `/users`,
-        };
-      },
+      query: (filterOptions) => ({
+        url: `/auth/users${filterOptions ? `?${filterOptions}` : ""}`,
+        method: "GET",
+      }),
       providesTags: [tagTypes.user],
     }),
 
-    editProfile: builder.mutation({
-      query: (info) => {
-        return {
-          url: `/profile`,
-          method: "PUT",
-          body: info,
-        };
-      },
-      invalidatesTags: [tagTypes.user],
+    getUserProfile: builder.query({
+      query: (username) => ({
+        url: `/auth/user/${username}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.user],
     }),
-    editUser: builder.mutation({
+    updateUserProfile: builder.mutation({
       query: (info) => {
         return {
-          url: `/user`,
+          url: `/update-profile`,
           method: "PUT",
           body: info,
         };
@@ -44,8 +32,7 @@ export const userApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetProfileQuery,
   useGetUsersQuery,
-  useEditProfileMutation,
-  useEditUserMutation,
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
 } = userApi;

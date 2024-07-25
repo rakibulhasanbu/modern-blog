@@ -5,11 +5,22 @@ import { TTokenUser } from "@/types";
 type TIState = {
   user: TTokenUser | null;
   accessToken: string | null;
+  theme: any;
 };
 
+const darkThemePreference = () =>
+  window.matchMedia("(prefers-color-scheme:dark)").matches;
+
 const initialState: TIState = {
-  user: null,
-  accessToken: null,
+  user: {
+    email: "",
+    fullName: "",
+    id: "",
+    profileImg: "",
+    username: "",
+  },
+  accessToken: "",
+  theme: () => (darkThemePreference() ? "dark" : "light"),
 };
 
 const authSlice = createSlice({
@@ -26,10 +37,13 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.user = null;
     },
+    setTheme: (state, action) => {
+      state.theme = action.payload;
+    },
   },
 });
 
-export const { setUser, logOut } = authSlice.actions;
+export const { setUser, logOut, setTheme } = authSlice.actions;
 export default authSlice.reducer;
 
 export const useCurrentToken = (state: RootState) => state.auth.accessToken;

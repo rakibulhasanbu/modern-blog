@@ -1,0 +1,57 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  blogSearch: "",
+  category: "home",
+  blog: {
+    title: "",
+    banner: "",
+    tags: [],
+    description: "",
+  },
+  blogContent: {},
+  textEditor: {
+    isReady: false,
+  },
+  editorState: "editor",
+};
+
+const blogSlice = createSlice({
+  name: "blog",
+  initialState,
+  reducers: {
+    setBlog: (state, action) => {
+      const { title, banner, content, tags, description, author } =
+        action.payload;
+      state.blog.title = title;
+      state.blog.banner = banner;
+      state.blog.tags = tags;
+      state.blog.description = description;
+    },
+    setBlogContent: (state, action) => {
+      state.blogContent = action.payload;
+    },
+    setBlogSearch: (state, action) => {
+      state.blogSearch = action.payload;
+    },
+    setCategory: (state, action) => {
+      state.category = action.payload;
+    },
+    setTextEditor: (state, action) => {
+      state.textEditor = action.payload;
+    },
+    setEditorState: (state, action) => {
+      state.editorState = action.payload;
+    },
+  },
+});
+
+export const {
+  setBlog,
+  setTextEditor,
+  setBlogSearch,
+  setCategory,
+  setEditorState,
+  setBlogContent,
+} = blogSlice.actions;
+export default blogSlice.reducer;

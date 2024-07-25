@@ -3,7 +3,7 @@ import { tagTypes } from "../../api/tagTypesList";
 
 const commentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getFlats: builder.query({
+    getComments: builder.query({
       query: (filterOptions) => ({
         url: `/comments${filterOptions ? `?${filterOptions}` : ""}`,
         method: "GET",
@@ -11,15 +11,7 @@ const commentApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.comment],
     }),
 
-    getMyFlats: builder.query({
-      query: () => ({
-        url: `/my-comments`,
-        method: "GET",
-      }),
-      providesTags: [tagTypes.comment],
-    }),
-
-    getMyBookingFlats: builder.query({
+    getMyBookingComments: builder.query({
       query: () => ({
         url: `/booking-requests-my`,
         method: "GET",
@@ -27,7 +19,7 @@ const commentApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.comment],
     }),
 
-    getBookingFlats: builder.query({
+    getBookingComments: builder.query({
       query: () => ({
         url: `/booking-requests`,
         method: "GET",
@@ -35,68 +27,47 @@ const commentApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.comment],
     }),
 
-    getFlatById: builder.query({
+    getCommentById: builder.query({
       query: (id) => ({
         url: `/comment/${id}`,
         method: "GET",
       }),
     }),
 
-    addFlat: builder.mutation({
+    addComment: builder.mutation({
       query: (data) => ({
-        url: "/comments",
+        url: "/comment",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [tagTypes.comment],
+      invalidatesTags: [tagTypes.comment, tagTypes.notification],
     }),
 
-    bookingFlat: builder.mutation({
-      query: (data) => ({
-        url: "/booking-applications",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: [tagTypes.comment],
-    }),
-
-    updateBookingFlat: builder.mutation({
+    updateBookingComment: builder.mutation({
       query: (updatedData) => ({
         url: `/booking-requests/${updatedData.id}`,
         method: "PUT",
-        body: updatedData.BookingFlatData,
+        body: updatedData.BookingCommentData,
       }),
-      invalidatesTags: [tagTypes.comment],
+      invalidatesTags: [tagTypes.comment, tagTypes.notification],
     }),
 
-    updatedFlat: builder.mutation({
-      query: (updatedData) => ({
-        url: `/comments/${updatedData.id}`,
-        method: "PUT",
-        body: updatedData.FlatData,
-      }),
-      invalidatesTags: [tagTypes.comment],
-    }),
-
-    deleteFlat: builder.mutation({
+    deleteComment: builder.mutation({
       query: (id) => ({
         url: `/comment/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.comment],
+      invalidatesTags: [tagTypes.comment, tagTypes.notification],
     }),
   }),
 });
 
 export const {
-  useGetFlatsQuery,
-  useGetMyFlatsQuery,
-  useGetFlatByIdQuery,
-  useAddFlatMutation,
-  useUpdatedFlatMutation,
-  useUpdateBookingFlatMutation,
-  useDeleteFlatMutation,
-  useGetMyBookingFlatsQuery,
-  useGetBookingFlatsQuery,
-  useBookingFlatMutation,
+  useGetCommentsQuery,
+  useGetCommentByIdQuery,
+  useAddCommentMutation,
+  useUpdateBookingCommentMutation,
+  useDeleteCommentMutation,
+  useGetMyBookingCommentsQuery,
+  useGetBookingCommentsQuery,
 } = commentApi;

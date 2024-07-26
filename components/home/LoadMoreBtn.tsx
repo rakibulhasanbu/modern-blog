@@ -9,10 +9,10 @@ const LoadMoreBtn = ({
   stateFunction,
   additionalParams,
 }: TLoadMoreBtn) => {
-  if (state !== null && state?.meta?.total > state?.data?.length) {
+  if (state !== null && state?.meta?.totalPage > state?.meta?.page) {
     return (
       <button
-        onClick={() => stateFunction(state.meta.page + 1)}
+        onClick={() => stateFunction(state?.meta?.page + 1)}
         className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2"
       >
         Load More

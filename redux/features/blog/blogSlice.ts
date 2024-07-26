@@ -11,6 +11,12 @@ const initialState = {
   },
   blogContent: [],
   editorState: "editor",
+  activity: {
+    total_likes: 0,
+    total_comments: 0,
+    total_reads: 0,
+    total_parent_comments: 0,
+  },
 };
 
 const blogSlice = createSlice({
@@ -36,6 +42,13 @@ const blogSlice = createSlice({
     setEditorState: (state, action) => {
       state.editorState = action.payload;
     },
+    setActivity: (state, action) => {
+      state.activity.total_likes = action.payload.total_likes;
+      state.activity.total_comments = action.payload.total_comments;
+      state.activity.total_reads = action.payload.total_reads;
+      state.activity.total_parent_comments =
+        action.payload.total_parent_comments;
+    },
   },
 });
 
@@ -45,5 +58,6 @@ export const {
   setCategory,
   setEditorState,
   setBlogContent,
+  setActivity,
 } = blogSlice.actions;
 export default blogSlice.reducer;

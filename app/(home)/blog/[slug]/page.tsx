@@ -2,6 +2,7 @@
 
 import BlogContent from "@/components/blog/BlogContent";
 import BlogInteraction from "@/components/blog/BlogInteraction";
+import CommentContainer from "@/components/blog/CommentContainer";
 import SimilarBlogs from "@/components/blog/SimilarBlogs";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
 import AppLoading from "@/components/ui/AppLoading";
@@ -10,8 +11,10 @@ import { TBlog } from "@/types";
 import { getDay } from "@/utils/formateDate";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
 const BlogDetails = () => {
+  const [commentWrapper, setCommentWrapper] = useState(false);
   const { slug } = useParams();
   const { data, isLoading } = useGetBlogBySlugQuery({ slug });
   const blog = data?.data as TBlog;
@@ -22,6 +25,12 @@ const BlogDetails = () => {
 
   return (
     <AnimationWrapper>
+      <CommentContainer
+        blog={blog}
+        commentWrapper={commentWrapper}
+        setCommentWrapper={setCommentWrapper}
+      />
+
       <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
         <img src={blog?.banner} alt="" className="aspect-video" />
         <div className="mt-12">
@@ -48,7 +57,11 @@ const BlogDetails = () => {
             </p>
           </div>
         </div>
-        <BlogInteraction blog={blog} />
+        <BlogInteraction
+          commentWrapper={commentWrapper}
+          setCommentWrapper={setCommentWrapper}
+          blog={blog}
+        />
 
         <div className="my-12 font-gelasio blog-page-content">
           {blog.content?.map((content: any, i) => (
@@ -58,7 +71,11 @@ const BlogDetails = () => {
           ))}
         </div>
 
-        <BlogInteraction blog={blog} />
+        <BlogInteraction
+          commentWrapper={commentWrapper}
+          setCommentWrapper={setCommentWrapper}
+          blog={blog}
+        />
         <SimilarBlogs blog={blog} />
       </div>
     </AnimationWrapper>

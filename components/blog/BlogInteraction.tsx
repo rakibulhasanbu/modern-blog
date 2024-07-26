@@ -1,27 +1,86 @@
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  selectCurrentUser,
+  useCurrentToken,
+} from "@/redux/features/auth/authSlice";
+import {
+  useGetIsLikedByUserQuery,
+  useLikeBlogMutation,
+} from "@/redux/features/blog/blogApi";
 import { useAppSelector } from "@/redux/hook";
 import { TBlog } from "@/types";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type TBlogInteraction = {
   blog: TBlog;
+  commentWrapper: boolean;
+  setCommentWrapper: (commentWrapper: boolean) => void;
 };
 
-const BlogInteraction = ({ blog }: TBlogInteraction) => {
+const BlogInteraction = ({
+  blog,
+  commentWrapper,
+  setCommentWrapper,
+}: TBlogInteraction) => {
   const user = useAppSelector(selectCurrentUser);
+  const token = useAppSelector(useCurrentToken);
+  const { data: isLikedData, refetch } = useGetIsLikedByUserQuery(blog?._id, {
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  });
+  const [likeBlog, { data, isSuccess }] = useLikeBlogMutation();
+  const [isLikedByUser, setIsLikedByUser] = useState(false);
+
+  const handleLike = async () => {
+    if (token) {
+      setIsLikedByUser((prev) => !prev);
+
+      const submittedData = {
+        likedByUser: isLikedByUser,
+        id: blog?._id,
+      };
+
+      await likeBlog(submittedData);
+    } else {
+      return toast.error("Please login to like this blog.");
+    }
+  };
+
+  useEffect(() => {
+    refetch();
+    if (token && isLikedData) {
+      if (isLikedData?.data?._id) {
+        setIsLikedByUser(Boolean(isLikedData));
+      }
+    }
+  }, [isLikedData?.data?._id]);
+
   return (
     <div className="">
       <hr className="border-grey my-2" />
       <div className="flex gap-6 justify-between">
         <div className="flex gap-3 items-center">
-          <button className="size-10 rounded-full flex items-center justify-center bg-grey/80">
-            <i className="fi fi-rr-heart text-xl"></i>
+          <button
+            onClick={handleLike}
+            className={`size-10 rounded-full flex items-center justify-center ${
+              isLikedByUser ? "bg-red/20 text-red" : "bg-grey/80"
+            }`}
+          >
+            <i
+              className={`fi text-xl ${
+                isLikedByUser ? "fi-sr-heart" : "fi-rr-heart"
+              }`}
+            ></i>
           </button>
           <p className="text-xl text-dark-grey">
             {blog?.activity?.total_likes}
           </p>
 
-          <button className="size-10 rounded-full flex items-center justify-center bg-grey/80">
+          <button
+            onClick={() => setCommentWrapper(!commentWrapper)}
+            className="size-10 rounded-full flex items-center justify-center bg-grey/80"
+          >
             <i className="fi fi-rr-comment-dots text-xl"></i>
           </button>
           <p className="text-xl text-dark-grey">

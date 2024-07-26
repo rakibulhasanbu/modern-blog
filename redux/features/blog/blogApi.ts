@@ -39,7 +39,7 @@ const blogApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: [tagTypes.blog],
+      providesTags: [tagTypes.blog, tagTypes.comment],
     }),
 
     getMyBlogs: builder.query({
@@ -50,11 +50,28 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.blog],
     }),
 
+    getIsLikedByUser: builder.query({
+      query: (id) => ({
+        url: `/isLiked-by-user?id=${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.blog, tagTypes.notification],
+    }),
+
     updateBlog: builder.mutation({
       query: (updatedData) => ({
         url: `/blog/${updatedData.slug}`,
         method: "PUT",
         body: updatedData.data,
+      }),
+      invalidatesTags: [tagTypes.blog],
+    }),
+
+    likeBlog: builder.mutation({
+      query: (data) => ({
+        url: `/like-blog`,
+        method: "PUT",
+        body: data,
       }),
       invalidatesTags: [tagTypes.blog],
     }),
@@ -77,4 +94,6 @@ export const {
   useUpdateBlogMutation,
   useDeleteBlogMutation,
   useGetMyBlogsQuery,
+  useLikeBlogMutation,
+  useGetIsLikedByUserQuery,
 } = blogApi;

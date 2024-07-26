@@ -85,6 +85,7 @@ export interface Activity {
 }
 
 export interface TBlog {
+  _id: string;
   slug: string;
   title: string;
   banner: string;
@@ -93,6 +94,7 @@ export interface TBlog {
   tags: string[];
   author: {
     personalInfo: PersonalInfo;
+    _id: string;
   };
   activity: Activity;
   comments?: string;

@@ -2,6 +2,7 @@
 
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
 import AppFormInput from "@/components/ui/AppFormInput";
+import AppLoading from "@/components/ui/AppLoading";
 import { useChangePasswordMutation } from "@/redux/features/auth/authApi";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -18,7 +19,7 @@ const ChangePassword = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const [changePassword] = useChangePasswordMutation();
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     console.log(data);
@@ -31,6 +32,10 @@ const ChangePassword = () => {
         toast.error(res?.data?.message || "something went wrong");
       });
   };
+
+  if (isLoading) {
+    return <AppLoading />;
+  }
 
   return (
     <AnimationWrapper>

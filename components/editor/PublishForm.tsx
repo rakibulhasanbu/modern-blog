@@ -26,11 +26,11 @@ const PublishForm = ({ slug }: { slug: string | null }) => {
   const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
 
   const handleTitleChange = (e: any) => {
-    dispatch(setBlog({ ...blog, title: e.target.value }));
+    dispatch(setBlog({ ...blog, title: e.target.value, tags: [] }));
   };
 
   const handleDescriptionChange = (e: any) => {
-    dispatch(setBlog({ ...blog, description: e.target.value }));
+    dispatch(setBlog({ ...blog, description: e.target.value, tags: [] }));
   };
 
   const handleKeyDown = (e: any) => {
@@ -42,7 +42,6 @@ const PublishForm = ({ slug }: { slug: string | null }) => {
   const handleKeyDownForTag = (e: any) => {
     if (e.keyCode === 13 || e.keyCode === 188) {
       e.preventDefault();
-
       const tag = e.target.value;
 
       if (blog.tags.length < tagLimit) {

@@ -71,13 +71,18 @@ const BlogEditor = ({
   };
 
   useEffect(() => {
-    if (blogContent.length > 0) {
+    if (slug && blogContent.length > 0) {
+      if (!editorRef.current) {
+        initEditor();
+        editorRef.current = true;
+      }
+    } else {
       if (!editorRef.current) {
         initEditor();
         editorRef.current = true;
       }
     }
-  }, [blogContent]);
+  }, [blogContent, slug]);
 
   useEffect(() => {
     if (content) {

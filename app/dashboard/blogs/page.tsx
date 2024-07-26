@@ -38,7 +38,6 @@ const GetMyBlogs = () => {
   }, [debouncedSearch, draft, page]);
 
   const { data, isLoading } = useGetMyBlogsQuery(queryString);
-  console.log(data);
 
   const tab = useSearchParams().get("tab");
 
@@ -70,12 +69,14 @@ const GetMyBlogs = () => {
           setDraft={setDraft}
           blogs={data?.data}
           setPage={setPage}
+          isLoading={isLoading}
         />
         <ManageDraftBlogPost
           draft={draft}
           setDraft={setDraft}
           blogs={data?.data}
           setPage={setPage}
+          isLoading={isLoading}
         />
       </InPageNavigation>
     </AnimationWrapper>

@@ -39,7 +39,7 @@ const SimilarBlogs = ({ blog }: TSimilarBlogs) => {
           <h1 className="text-2xl mt-14 mb-10 font-medium">Similar Blogs</h1>
           {data?.data?.data?.map((blog: any, i: number) => (
             <AnimationWrapper
-              key={blog?.title}
+              key={i}
               transition={{ duration: 1, delay: i * 0.08 }}
             >
               <BlogCard blog={blog} />

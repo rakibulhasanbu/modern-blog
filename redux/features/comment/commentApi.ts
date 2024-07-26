@@ -3,35 +3,12 @@ import { tagTypes } from "../../api/tagTypesList";
 
 const commentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getComments: builder.query({
-      query: (filterOptions) => ({
-        url: `/comments${filterOptions ? `?${filterOptions}` : ""}`,
+    getCommentsByBlogId: builder.query({
+      query: ({ id, queryString }) => ({
+        url: `/comments/${id}${queryString ? `?${queryString}` : ""}`,
         method: "GET",
       }),
-      providesTags: [tagTypes.comment],
-    }),
-
-    getMyBookingComments: builder.query({
-      query: () => ({
-        url: `/booking-requests-my`,
-        method: "GET",
-      }),
-      providesTags: [tagTypes.comment],
-    }),
-
-    getBookingComments: builder.query({
-      query: () => ({
-        url: `/booking-requests`,
-        method: "GET",
-      }),
-      providesTags: [tagTypes.comment],
-    }),
-
-    getCommentById: builder.query({
-      query: (id) => ({
-        url: `/comment/${id}`,
-        method: "GET",
-      }),
+      providesTags: [tagTypes.comment, tagTypes.notification, tagTypes.blog],
     }),
 
     addComment: builder.mutation({
@@ -40,7 +17,7 @@ const commentApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [tagTypes.comment, tagTypes.notification],
+      invalidatesTags: [tagTypes.comment, tagTypes.notification, tagTypes.blog],
     }),
 
     updateBookingComment: builder.mutation({
@@ -63,11 +40,8 @@ const commentApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetCommentsQuery,
-  useGetCommentByIdQuery,
+  useGetCommentsByBlogIdQuery,
   useAddCommentMutation,
   useUpdateBookingCommentMutation,
   useDeleteCommentMutation,
-  useGetMyBookingCommentsQuery,
-  useGetBookingCommentsQuery,
 } = commentApi;

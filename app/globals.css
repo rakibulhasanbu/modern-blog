@@ -55,7 +55,7 @@
   }
 
   .btn-light {
-    @apply btn-dark bg-grey text-black hover:bg-[#eeeeee];
+    @apply btn-dark bg-grey text-black hover:bg-grey/50;
   }
 
   .input-box {

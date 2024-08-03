@@ -40,10 +40,16 @@ const authSlice = createSlice({
     setTheme: (state, action) => {
       state.theme = action.payload;
     },
+    setUserProfileImage: (state, action) => {
+      if (state.user) {
+        state.user.profileImg = action.payload;
+      }
+    },
   },
 });
 
-export const { setUser, logOut, setTheme } = authSlice.actions;
+export const { setUser, logOut, setTheme, setUserProfileImage } =
+  authSlice.actions;
 export default authSlice.reducer;
 
 export const useCurrentToken = (state: RootState) => state.auth.accessToken;

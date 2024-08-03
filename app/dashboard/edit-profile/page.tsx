@@ -4,13 +4,15 @@ import AnimationWrapper from "@/components/ui/AnimationWrapper";
 import AppFormInput from "@/components/ui/AppFormInput";
 import AppLoading from "@/components/ui/AppLoading";
 import AppTextarea from "@/components/ui/AppTextarea";
-import { profileData } from "@/data";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  selectCurrentUser,
+  setUserProfileImage,
+} from "@/redux/features/auth/authSlice";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from "@/redux/features/user/userApi";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { TUser } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -41,13 +43,14 @@ const EditProfile = () => {
     setValue,
   } = useForm<FormData>();
 
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
   const { data, isLoading, refetch } = useGetUserProfileQuery(user?.username);
   const [updateUserProfile, { isSuccess }] = useUpdateUserProfileMutation();
-  const profile = profileData as TUser;
+  const profile = data?.data as TUser;
 
   const [profileImage, setProfileImage] = useState(
-    profile.personalInfo.profileImg
+    profile?.personalInfo?.profileImg
   );
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -78,24 +81,25 @@ const EditProfile = () => {
   const handleProfileUpload = async () => {
     if (!profileImage) {
       toast.error("Please Select profile image and try again");
-    } else if (profileImage === profile.personalInfo.profileImg) {
+    } else if (profileImage === profile?.personalInfo?.profileImg) {
       toast.error("Please Select new profile image and try again");
+    } else {
+      const loadingToast = toast.loading("Uploading...🚀");
+      await updateUserProfile({ profileImg: profileImage })
+        .unwrap()
+        .then((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.success(res?.message || "Profile Image update Successful 👍");
+        })
+        .catch((res: any) => {
+          toast.dismiss(loadingToast);
+          toast.error(res?.data?.message || "something went wrong");
+        });
     }
-    const loadingToast = toast.loading("Uploading...🚀");
-    await updateUserProfile({ profileImg: profileImage })
-      .unwrap()
-      .then((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.success(res?.message || "Profile Image update Successful 👍");
-      })
-      .catch((res: any) => {
-        toast.dismiss(loadingToast);
-        toast.error(res?.data?.message || "something went wrong");
-      });
   };
 
   const handleFileChange = (e: any) => {
-    const maxSizeInBytes = 4 * 1024 * 1024;
+    const maxSizeInBytes = 2 * 1024 * 1024;
     const file = e.target.files?.[0];
 
     if (file?.size && file.size > maxSizeInBytes) {
@@ -117,25 +121,29 @@ const EditProfile = () => {
   useEffect(() => {
     if (isSuccess) {
       refetch();
+      dispatch(setUserProfileImage(profile?.personalInfo?.profileImg));
     }
-    setValue("fullName", profile.personalInfo.fullName);
-    setValue("email", profile.personalInfo.email);
-    setValue("username", profile.personalInfo.username);
-    setValue("bio", profile.personalInfo.bio || "");
-    {
-      Object.keys(profile.socialLinks).map((key) => {
-        const link = (profile as any).socialLinks[key];
-        return setValue(
-          key as
-            | "website"
-            | "twitter"
-            | "instagram"
-            | "github"
-            | "facebook"
-            | "youtube",
-          link || ""
-        );
-      });
+    setValue("fullName", profile?.personalInfo?.fullName);
+    setValue("email", profile?.personalInfo?.email);
+    setValue("username", profile?.personalInfo?.username);
+    setValue("bio", profile?.personalInfo?.bio || "");
+    setProfileImage(profile?.personalInfo?.profileImg);
+    if (profile) {
+      {
+        Object?.keys(profile.socialLinks).map((key) => {
+          const link = (profile as any).socialLinks[key];
+          return setValue(
+            key as
+              | "website"
+              | "twitter"
+              | "instagram"
+              | "github"
+              | "facebook"
+              | "youtube",
+            link || ""
+          );
+        });
+      }
     }
   }, [isSuccess, profile, refetch, setValue]);
 
@@ -175,6 +183,7 @@ const EditProfile = () => {
 
           <button
             onClick={handleProfileUpload}
+            disabled={(profileImage?.length as number) < 500}
             className="btn-light mt-5 max-lg:center lg:w-full px-10"
           >
             Upload
@@ -208,6 +217,7 @@ const EditProfile = () => {
             placeholder="username"
             icon="fi-rr-at"
             register={register}
+            disabled
             error={errors.username}
           />
           <p className="text-dark-grey -mt-3">
@@ -229,19 +239,22 @@ const EditProfile = () => {
           <p className="my-6 text-dark-grey">Add your social handles below</p>
 
           <div className="md:grid md:grid-cols-2 gap-x-6">
-            {Object.keys(profile.socialLinks).map((key) => {
-              const link = (profile as any).socialLinks[key];
-              return (
-                <AppFormInput
-                  key={key}
-                  name={key}
-                  type="url"
-                  register={register}
-                  placeholder="https://"
-                  icon={key !== "website" ? `fi-brands-${key}` : "fi-rr-globe"}
-                />
-              );
-            })}
+            {profile &&
+              Object?.keys(profile?.socialLinks).map((key) => {
+                const link = (profile as any).socialLinks[key];
+                return (
+                  <AppFormInput
+                    key={key}
+                    name={key}
+                    type="url"
+                    register={register}
+                    placeholder="https://"
+                    icon={
+                      key !== "website" ? `fi-brands-${key}` : "fi-rr-globe"
+                    }
+                  />
+                );
+              })}
           </div>
 
           <button className="btn-dark w-auto px-10">Update</button>

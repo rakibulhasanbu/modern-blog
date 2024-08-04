@@ -54,8 +54,6 @@ const EditProfile = () => {
   );
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
-
     const submittedData = {
       ...data,
       socialLinks: {

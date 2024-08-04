@@ -31,6 +31,7 @@ const BlogInteraction = ({
   });
   const [likeBlog, { data, isSuccess }] = useLikeBlogMutation();
   const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
 
   const handleLike = async () => {
     if (token) {
@@ -55,6 +56,12 @@ const BlogInteraction = ({
       }
     }
   }, [isLikedData?.data?._id]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
 
   return (
     <div className="">
@@ -98,7 +105,7 @@ const BlogInteraction = ({
           )}
           <Link
             target="_blank"
-            href={`https://twitter.com/intent/tweet?text=Read${blog?.title}&url=${location?.href}`}
+            href={`https://twitter.com/intent/tweet?text=Read${blog?.title}&url=${currentUrl}`}
           >
             <i className="fi fi-brands-twitter text-xl hover:text-twitter"></i>
           </Link>

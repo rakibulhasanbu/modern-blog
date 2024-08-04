@@ -1,13 +1,12 @@
 import AuthForm from "@/components/auth/AuthForm";
+import SuspenseWrapper from "@/components/shared/SuspenseWrapper";
 
 const page = () => {
-    return (
-        <div className=''>
-            <AuthForm
-                type="sign-in"
-            />
-        </div>
-    );
+  return (
+    <SuspenseWrapper>
+      <AuthForm type="sign-in" />
+    </SuspenseWrapper>
+  );
 };
 
 export default page;

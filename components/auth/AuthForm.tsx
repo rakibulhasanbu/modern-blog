@@ -15,6 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { authWithGoogle } from "../shared/firebase";
+import SuspenseWrapper from "../shared/SuspenseWrapper";
 
 interface FormData {
   fullName: string;
@@ -106,93 +107,95 @@ const AuthForm = ({ type }: { type: string }) => {
   };
 
   return (
-    <AnimationWrapper keyValue={type}>
-      <section className="h-cover flex items-center justify-center">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-[80%] max-w-[400px]"
-        >
-          <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
-            {type === "sign-in" ? "Welcome back" : "Join us today"}
-          </h1>
+    <SuspenseWrapper>
+      <AnimationWrapper keyValue={type}>
+        <section className="h-cover flex items-center justify-center">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-[80%] max-w-[400px]"
+          >
+            <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
+              {type === "sign-in" ? "Welcome back" : "Join us today"}
+            </h1>
 
-          {type !== "sign-in" ? (
+            {type !== "sign-in" ? (
+              <AppFormInput
+                name="fullName"
+                type="text"
+                placeholder="Full Name"
+                icon="fi-rr-user"
+                register={register}
+                required
+                error={errors.fullName}
+              />
+            ) : (
+              ""
+            )}
+
             <AppFormInput
-              name="fullName"
-              type="text"
-              placeholder="Full Name"
-              icon="fi-rr-user"
+              name="email"
+              type="email"
+              placeholder="Enter your Email"
+              icon="fi-rr-envelope"
               register={register}
               required
-              error={errors.fullName}
+              error={errors.email}
             />
-          ) : (
-            ""
-          )}
 
-          <AppFormInput
-            name="email"
-            type="email"
-            placeholder="Enter your Email"
-            icon="fi-rr-envelope"
-            register={register}
-            required
-            error={errors.email}
-          />
+            <AppFormInput
+              name="password"
+              type="password"
+              placeholder="Password"
+              icon="fi-rr-key"
+              register={register}
+              required
+              error={errors.password}
+            />
 
-          <AppFormInput
-            name="password"
-            type="password"
-            placeholder="Password"
-            icon="fi-rr-key"
-            register={register}
-            required
-            error={errors.password}
-          />
+            <button className="btn-dark center mt-14" type="submit">
+              {type.replace("-", " ")}
+            </button>
 
-          <button className="btn-dark center mt-14" type="submit">
-            {type.replace("-", " ")}
-          </button>
+            <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
+              <hr className="w-1/2 border-black" />
+              <p>or</p>
+              <hr className="w-1/2 border-black" />
+            </div>
 
-          <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
-            <hr className="w-1/2 border-black" />
-            <p>or</p>
-            <hr className="w-1/2 border-black" />
-          </div>
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="btn-dark flex items-center justify-center gap-4 w-[90%] center"
+            >
+              <img src={"/google.png"} className="w-5" />
+              continue with google
+            </button>
 
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="btn-dark flex items-center justify-center gap-4 w-[90%] center"
-          >
-            <img src={"/google.png"} className="w-5" />
-            continue with google
-          </button>
-
-          {type === "sign-in" ? (
-            <p className="mt-6 text-dark-grey text-xl text-center">
-              Don&apos;t have an account ?
-              <Link
-                href="/auth/sign-up"
-                className="underline text-black text-xl ml-1"
-              >
-                Join us today
-              </Link>
-            </p>
-          ) : (
-            <p className="mt-6 text-dark-grey text-xl text-center">
-              Already a member?
-              <Link
-                href="/auth/sign-in"
-                className="underline text-black text-xl ml-1"
-              >
-                Sign in here.
-              </Link>
-            </p>
-          )}
-        </form>
-      </section>
-    </AnimationWrapper>
+            {type === "sign-in" ? (
+              <p className="mt-6 text-dark-grey text-xl text-center">
+                Don&apos;t have an account ?
+                <Link
+                  href="/auth/sign-up"
+                  className="underline text-black text-xl ml-1"
+                >
+                  Join us today
+                </Link>
+              </p>
+            ) : (
+              <p className="mt-6 text-dark-grey text-xl text-center">
+                Already a member?
+                <Link
+                  href="/auth/sign-in"
+                  className="underline text-black text-xl ml-1"
+                >
+                  Sign in here.
+                </Link>
+              </p>
+            )}
+          </form>
+        </section>
+      </AnimationWrapper>
+    </SuspenseWrapper>
   );
 };
 

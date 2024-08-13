@@ -35,10 +35,10 @@ const BlogEditor = ({
   const [createBlog, { isLoading }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
 
-  //   const Editor = useMemo(
-  //     () => dynamic(() => import("./Editor"), { ssr: false }),
-  //     []
-  //   );
+  const Editor = useMemo(
+    () => dynamic(() => import("./Editor"), { ssr: false }),
+    []
+  );
 
   const handleBannerUpload = async (e: any) => {
     const { url } = await uploadImage({ setLoading, e });
@@ -62,10 +62,11 @@ const BlogEditor = ({
   };
 
   const handlePublishBlog = async () => {
-    if (!blog.banner.length) {
+    if (!blog?.banner?.length) {
       return toast.error("Upload a blog banner to publish it");
     }
-    if (!blog.title.length) {
+
+    if (!blog?.title?.length) {
       return toast.error("Write blog title before saving it as a draft");
     }
 
@@ -77,10 +78,10 @@ const BlogEditor = ({
   };
 
   const handleDraftBlog = async () => {
-    if (!blog.title.length) {
+    if (!blog?.title?.length) {
       return toast.error("Write blog title before publishing it");
     }
-    if (!blog.banner.length) {
+    if (!blog?.banner?.length) {
       return toast.error("Upload a blog banner to publish it");
     }
 
@@ -214,7 +215,7 @@ const BlogEditor = ({
 
           <hr className="w-full opacity-10 my-5" />
 
-          {/* <Editor /> */}
+          <Editor />
         </div>
       </section>
     </AnimationWrapper>

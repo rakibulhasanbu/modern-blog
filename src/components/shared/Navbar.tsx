@@ -103,7 +103,7 @@ const Navbar = () => {
           <p>Write</p>
         </Link>
 
-        <button
+        {/* <button
           className="bg-grey hover:bg-black/10 size-12 rounded-full flex items-center justify-center"
           onClick={() =>
             dispatch(setTheme(theme === "light" ? "dark" : "light"))
@@ -114,7 +114,7 @@ const Navbar = () => {
               theme === "light" ? "moon-stars" : "sun"
             } text-xl block mt-1`}
           ></i>
-        </button>
+        </button> */}
 
         {accessToken ? (
           <>

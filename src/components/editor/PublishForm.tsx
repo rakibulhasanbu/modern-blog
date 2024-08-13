@@ -23,7 +23,7 @@ const PublishForm = ({ slug }: { slug: string | null }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
-  const { blog, blogContent } = useAppSelector((state) => state.blog);
+  const { blog, content } = useAppSelector((state) => state.blog);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
 
@@ -75,7 +75,7 @@ const PublishForm = ({ slug }: { slug: string | null }) => {
 
     const blogObj = {
       ...blog,
-      content: blogContent,
+      content,
       draft: false,
       author: user?.id,
     };

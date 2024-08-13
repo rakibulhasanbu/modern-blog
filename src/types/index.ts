@@ -90,7 +90,7 @@ export interface TBlog {
   title: string;
   banner: string;
   description: string;
-  content?: unknown[];
+  content?: string;
   tags: string[];
   author: {
     personalInfo: PersonalInfo;

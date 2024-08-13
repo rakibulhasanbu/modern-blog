@@ -9,7 +9,8 @@ const initialState = {
     tags: [],
     description: "",
   },
-  blogContent: [],
+  content: "",
+  blogContent: "",
   editorState: "editor",
   activity: {
     total_likes: 0,
@@ -32,6 +33,9 @@ const blogSlice = createSlice({
     },
     setBlogContent: (state, action) => {
       state.blogContent = action.payload;
+    },
+    setContent: (state, action) => {
+      state.content = action.payload;
     },
     setBlogSearch: (state, action) => {
       state.blogSearch = action.payload;
@@ -58,6 +62,8 @@ export const {
   setCategory,
   setEditorState,
   setBlogContent,
+  setContent,
   setActivity,
 } = blogSlice.actions;
+
 export default blogSlice.reducer;

@@ -51,7 +51,7 @@ const MainPage = ({ slug }: { slug: string }) => {
   return (
     <>
       {editorState === "editor" ? (
-        <BlogEditor content={data?.data?.content} slug={slug} />
+        <BlogEditor contents={data?.data?.content} slug={slug} />
       ) : (
         <PublishForm slug={slug} />
       )}

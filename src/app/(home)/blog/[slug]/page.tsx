@@ -1,23 +1,32 @@
 "use client";
 
-import BlogContent from "@/components/blog/BlogContent";
 import BlogInteraction from "@/components/blog/BlogInteraction";
 import CommentContainer from "@/components/blog/CommentContainer";
 import SimilarBlogs from "@/components/blog/SimilarBlogs";
+import Editor from "@/components/editor/Editor";
 import AnimationWrapper from "@/components/ui/AnimationWrapper";
 import AppLoading from "@/components/ui/AppLoading";
 import { useGetBlogBySlugQuery } from "@/redux/features/blog/blogApi";
 import { TBlog } from "@/types";
 import { getDay } from "@/utils/formateDate";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const BlogDetails = () => {
   const [commentWrapper, setCommentWrapper] = useState(false);
   const { slug } = useParams();
-  const { data, isLoading } = useGetBlogBySlugQuery({ slug });
+  const { data, isLoading, isSuccess } = useGetBlogBySlugQuery({ slug });
   const blog = data?.data as TBlog;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!blog) {
+      router.push("/");
+      toast.error("Blog not found");
+    }
+  }, [isSuccess]);
 
   if (isLoading) {
     return <AppLoading />;
@@ -62,13 +71,8 @@ const BlogDetails = () => {
           setCommentWrapper={setCommentWrapper}
           blog={blog}
         />
-
-        <div className="my-12 font-gelasio blog-page-content">
-          {blog.content?.map((content: any, i) => (
-            <div key={i} className="my-4 md:my-8">
-              <BlogContent content={content} />
-            </div>
-          ))}
+        <div className="my-12 font-gelasio">
+          <Editor initialContent={blog?.content} editable={false} />
         </div>
 
         <BlogInteraction

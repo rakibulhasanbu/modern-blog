@@ -21,15 +21,15 @@ import AnimationWrapper from "../ui/AnimationWrapper";
 import dynamic from "next/dynamic";
 
 const BlogEditor = ({
-  content,
+  contents,
   slug,
 }: {
-  content: any;
+  contents: any;
   slug: string | null;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { blog, blogContent } = useAppSelector((state) => state.blog);
+  const { blog, content } = useAppSelector((state) => state.blog);
   const user = useAppSelector(selectCurrentUser);
   const [loading, setLoading] = useState(false);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
@@ -70,7 +70,7 @@ const BlogEditor = ({
       return toast.error("Write blog title before saving it as a draft");
     }
 
-    if (blogContent?.length) {
+    if (content?.length) {
       dispatch(setEditorState("publish"));
     } else {
       return toast.error("Write something in your blog to publish it.");
@@ -86,10 +86,10 @@ const BlogEditor = ({
     }
 
     const loadingToast = toast.loading("Saving draft...");
-
+    console.log(contents);
     const blogObj = {
       ...blog,
-      content: blogContent,
+      content: content,
       draft: true,
       author: user?.id,
     };
@@ -102,7 +102,7 @@ const BlogEditor = ({
           toast.dismiss(loadingToast);
           toast.success("Blog saved as draft");
           router.push("/dashboard/blogs?tab=draft");
-          dispatch(setBlogContent([]));
+          dispatch(setBlogContent(""));
           dispatch(
             setBlog({
               title: "",
@@ -123,7 +123,7 @@ const BlogEditor = ({
           toast.dismiss(loadingToast);
           toast.success("Blog saved as draft");
           router.push("/dashboard/blogs?tab=draft");
-          dispatch(setBlogContent([]));
+          dispatch(setBlogContent(""));
           dispatch(
             setBlog({
               title: "",
@@ -141,9 +141,9 @@ const BlogEditor = ({
   };
 
   useEffect(() => {
-    if (content) {
-      dispatch(setBlogContent(content));
-    }
+    // if (content) {
+    //   dispatch(setBlogContent(content));
+    // }
   }, [content, dispatch]);
 
   return (
@@ -215,7 +215,7 @@ const BlogEditor = ({
 
           <hr className="w-full opacity-10 my-5" />
 
-          <Editor />
+          <Editor initialContent={content} />
         </div>
       </section>
     </AnimationWrapper>

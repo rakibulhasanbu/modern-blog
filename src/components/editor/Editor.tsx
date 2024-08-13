@@ -4,6 +4,8 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
+import { useAppDispatch } from "@/redux/hook";
+import { setContent } from "@/redux/features/blog/blogSlice";
 
 type TEditor = {
   initialContent?: string;
@@ -11,6 +13,8 @@ type TEditor = {
 };
 
 const Editor = ({ editable = true, initialContent }: TEditor) => {
+  const dispatch = useAppDispatch();
+
   const editor = useCreateBlockNote({
     initialContent: initialContent ? JSON.parse(initialContent) : undefined,
   });
@@ -21,7 +25,7 @@ const Editor = ({ editable = true, initialContent }: TEditor) => {
         editor={editor}
         editable={editable}
         theme="light"
-        onChange={() => console.log(editor.document)}
+        onChange={() => dispatch(setContent(JSON.stringify(editor.document)))}
       />
     </div>
   );
